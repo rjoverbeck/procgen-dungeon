@@ -71,3 +71,15 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 [Aa]ssets/[Ss]treamingAssets/aa.meta
 [Aa]ssets/[Ss]treamingAssets/aa/*
+
+
+#
+# Section for LaTeX
+#
+Extras/*.sty
+Extras/*.aux
+Extras/*.fdb_latexmk
+Extras/*.fls
+Extras/*.log
+Extras/*.out
+Extras/*.synctex.gz
