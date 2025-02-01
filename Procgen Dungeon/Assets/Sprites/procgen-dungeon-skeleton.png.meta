@@ -1,25 +1,19 @@
 fileFormatVersion: 2
-guid: 4aa73a32312019e46a6a3b00d9f42967
+guid: 04f02a9af6842694eb8d49c65a19bae9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1156736322109448087
-    second: KnightDeathSpritesheet_0
+      213: 6948133948737578409
+    second: procgen-dungeon-skeleton_0
   - first:
-      213: -5220974121779702636
-    second: KnightDeathSpritesheet_1
+      213: 4361751465394300173
+    second: procgen-dungeon-skeleton_1
   - first:
-      213: 905126926510807337
-    second: KnightDeathSpritesheet_2
+      213: 1845180242006662149
+    second: procgen-dungeon-skeleton_2
   - first:
-      213: -5529221516434093393
-    second: KnightDeathSpritesheet_3
-  - first:
-      213: 8940889963784738376
-    second: KnightDeathSpritesheet_4
-  - first:
-      213: -6248246282026194425
-    second: KnightDeathSpritesheet_5
+      213: -5403958852889313272
+    second: procgen-dungeon-skeleton_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: KnightDeathSpritesheet_0
+      name: procgen-dungeon-skeleton_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 32
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,20 +124,64 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 960efd5917272ffe0800000000000000
-      internalID: -1156736322109448087
+      spriteID: 9a5e55a730bbc6060800000000000000
+      internalID: 6948133948737578409
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: KnightDeathSpritesheet_1
+      name: procgen-dungeon-skeleton_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d05ed5529dd088c30800000000000000
+      internalID: 4361751465394300173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: procgen-dungeon-skeleton_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50c506767a56b9910800000000000000
+      internalID: 1845180242006662149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: procgen-dungeon-skeleton_3
       rect:
         serializedVersion: 2
         x: 48
         y: 0
-        width: 48
-        height: 32
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,96 +190,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 49450d9b2bf5b87b0800000000000000
-      internalID: -5220974121779702636
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: KnightDeathSpritesheet_2
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 48
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9295153e428af8c00800000000000000
-      internalID: 905126926510807337
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: KnightDeathSpritesheet_3
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 0
-        width: 48
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: faacf7c63524443b0800000000000000
-      internalID: -5529221516434093393
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: KnightDeathSpritesheet_4
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 48
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8469e3b1d0c641c70800000000000000
-      internalID: 8940889963784738376
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: KnightDeathSpritesheet_5
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 70a6ca27c15c949a0800000000000000
-      internalID: -6248246282026194425
+      spriteID: 80084b00e084105b0800000000000000
+      internalID: -5403958852889313272
       vertices: []
       indices: 
       edges: []
@@ -250,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 70169bb3816b3c847913894ac75d44a2
+    spriteID: ac8063a00faf4a2489b6a8168aa1c806
     internalID: 0
     vertices: []
     indices: 
@@ -260,12 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      KnightDeathSpritesheet_0: -1156736322109448087
-      KnightDeathSpritesheet_1: -5220974121779702636
-      KnightDeathSpritesheet_2: 905126926510807337
-      KnightDeathSpritesheet_3: -5529221516434093393
-      KnightDeathSpritesheet_4: 8940889963784738376
-      KnightDeathSpritesheet_5: -6248246282026194425
+      procgen-dungeon-skeleton_0: 6948133948737578409
+      procgen-dungeon-skeleton_1: 4361751465394300173
+      procgen-dungeon-skeleton_2: 1845180242006662149
+      procgen-dungeon-skeleton_3: -5403958852889313272
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
