@@ -85,5 +85,4 @@ Extras/*.out
 Extras/*.synctex.gz
 
 # Other
-.idea
-/.idea
+**/.idea/
