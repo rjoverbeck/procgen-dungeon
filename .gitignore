@@ -83,3 +83,6 @@ Extras/*.fls
 Extras/*.log
 Extras/*.out
 Extras/*.synctex.gz
+
+# Other
+.idea
