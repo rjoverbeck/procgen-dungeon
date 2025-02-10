@@ -35,17 +35,41 @@ Add abstract here
 
 \section{Introduction}
 
-This is an example citation. See file refs.bib by clicking on ``Project'' on the top-left. 
+Add introduction here
 
-You can cite using \citet{Claydon17} to make a reference in the text. Or \citep{Claydon17} for a reference in parenthesis. 
+\section{Binary Space Partitioning Approach}
+\begin{quote}
+  \emph{"A binary space partition takes a given space and splits it in half, and then takes the two areas that were created and splits those in half, and repeats until some threshold is reached."}
+  \cite[p.~293]{ShortAdams2017}
+\end{quote}
 
-\section{Something}
+This quote sums up our first approach to procedurally generate rooms for our 2D dungeon. In this implementation, we define a rectangular region---the entire dungeon area---and iteratively subdivide it into smaller rectangles (potential ``rooms'') until no further meaningful subdivision is possible Lastly, some offset is applied to create space between these rooms. The following outlines how this simplified Binary Space Partitioning (BSP) approach is handled in our Unity project.
 
-Add content
+\subsection{Setting up the Initial Partition}
+The process begins by defining a single large bounding area using a \texttt{BoundsInt} structure. As noted in the Unity documentation, the \texttt{BoundsInt} structure ``represents an axis aligned bounding box with all values as integers'' \citep{unity_docs}. This is useful for several reasons, among them since \texttt{BoundsInt} uses integer coordinates, it aligns naturally with tile-based systems (where tiles or grid cells are also defined by integral x, y positions).
 
-\subsection{Sub-something}
+Next, this bounding area is enqueued in a \texttt{Queue<BoundsInt>} which manages partitions that still need to be processed. A queue-based approach was selected to keep the partitioning logic simple and easy to follow. A stack-based approach would have worked equally as well---only changing the order of processing.
 
-Add content
+\subsection{Iterative Subdivision}
+While there are partitions in the queue:
+\begin{itemize}
+  \item Dequeue the next partition.
+  \item Check if the current partition meets or exceeds the \emph{minimum width} (\texttt{minWidth}) and \emph{minimum height} (\texttt{minHeight}) constraints.
+  \item If it can be subdivided, choose randomly whether to \emph{prefer a horizontal} or \emph{vertical} split (a 50/50 chance). Attempt to partition the space along that orientation if there is sufficient size to do so at least twice (e.g., if the height is at least \texttt{2 * minHeight} for a horizontal split).
+  \item If the chosen orientation is not feasible, try the alternative orientation.
+  \item If neither orientation is possible (the partition is too small), mark that partition as finalized (a ``room'') and add it to the \texttt{partitions} list.
+\end{itemize}
 
-\bibliography{refs}
+\subsection{Managing Subdivisions}
+The actual subdivision is performed in two helper methods, \texttt{PartitionHorizontally} and \texttt{PartitionVertically}. These methods randomly determine a \emph{split point} within the valid range and create two new \texttt{BoundsInt} objects representing the subdivided spaces. Each new partition is enqueued for further subdivision if possible.
+
+\begin{itemize}
+  \item \emph{Horizontal Partition:} Splits along the y-axis, producing a top and bottom rectangle.
+  \item \emph{Vertical Partition:} Splits along the x-axis, producing a left and right rectangle.
+\end{itemize}
+
+By alternating or randomly selecting horizontal versus vertical splits, the algorithm produces layouts of different shapes, preventing overly predictable results.
+
+
+\bibliography{references}
 \end{document}
