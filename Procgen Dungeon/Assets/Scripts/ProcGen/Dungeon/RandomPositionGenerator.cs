@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class RandomPositionGenerator
 {
+    // TODO: Extend base class for each algorithm
     public static HashSet<Vector2Int> Generate(Vector2Int topLeft, Vector2Int topRight, Vector2Int bottomLeft, Vector2Int bottomRight, int numberOfPositions)
     {
         HashSet<Vector2Int> positions = new HashSet<Vector2Int>();

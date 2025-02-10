@@ -13,6 +13,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "AlgorithmSelect",
+                    "type": "Button",
+                    "id": "dde6a617-6b86-480b-a3af-e290d7f11b98",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -125,6 +134,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "1a999736-ab3a-4afc-9383-209c4ecafa27",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AlgorithmSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
