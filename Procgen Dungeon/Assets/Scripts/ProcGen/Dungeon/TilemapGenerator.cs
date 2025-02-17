@@ -5,11 +5,13 @@ using UnityEngine.Tilemaps;
 
 public class TilemapGenerator : MonoBehaviour
 {
+    [Header("Common")]
     [SerializeField]
     private Tilemap floorTilemap;
     [SerializeField]
     private TileBase floorTile;
 
+    [Header("Binary Space Partitioning")]
     [SerializeField]
     private int minRoomWidth = 8;
     [SerializeField]
@@ -19,22 +21,36 @@ public class TilemapGenerator : MonoBehaviour
     [SerializeField]
     private int dungeonHeight = 60;
     [SerializeField]
-    private Vector3Int startPosition = new Vector3Int(-30, -30, 0);
-
+    private Vector3Int bspStartPosition = new Vector3Int(-30, -30, 0);
     [SerializeField]
     [Range(0, 10)]
     private int roomOffset = 1;
 
+    [Header("Random Walk")]
+    [SerializeField]
+    private Vector2Int rwStartPosition = new Vector2Int(0, 0);
+    [SerializeField]
+    private int numberOfSteps = 40;
+    [SerializeField]
+    private int numberOfWalks = 20;
+
     private void Start()
     {
-        GenerateBinarySpacePartitionedRooms();
+        //GenerateBinarySpacePartitionedRooms();
+        GenerateRandomWalkRoom();
+    }
+
+    private void GenerateRandomWalkRoom()
+    {
+        HashSet<Vector2Int> floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+        DrawFloorTiles(floorPositions);
     }
 
     private void GenerateBinarySpacePartitionedRooms()
     {
         BoundsInt dungeonArea = new BoundsInt(
-            position: startPosition,
-            size: new Vector3Int(dungeonWidth, dungeonHeight, 1)
+            position: bspStartPosition,
+            size: new Vector3Int(dungeonWidth, dungeonHeight, 0)
         );
 
         List<BoundsInt> rooms = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight);
