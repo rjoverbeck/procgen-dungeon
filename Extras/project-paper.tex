@@ -70,6 +70,29 @@ The actual subdivision is performed in two helper methods, \texttt{PartitionHori
 
 By alternating or randomly selecting horizontal versus vertical splits, the algorithm produces layouts of different shapes, preventing overly predictable results.
 
+\subsection{Applying Offset}
+TODO
+
+\section{Random Walk Approach}
+\begin{quote}
+  \emph{"Random walks are produced by starting at a given point and then taking steps in random directions. Many natural processes, like molecular  motion, can be described by random walks, and they can be useful for  generating all sorts of naturalistic paths and features."}
+  \cite[p.~286]{ShortAdams2017}
+\end{quote}
+
+This quote sums up our second approach to procedurally generate rooms for our 2D dungeon. In this implementation, we choose a starting position and perform a defined number of ``walks,'' each consisting of a certain number of steps. Every time we move to a new position, we record that position in a set of coordinates. After all walks are completed, these coordinates form the layout of our dungeon floor. The following outlines how this is handled in our Unity project.
+
+\subsection{Initial Conditions}
+A \texttt{HashSet} is initialized to keep track of every visited position (avoiding duplicates).
+
+\subsection{Iterations (Walks)}
+The number of iterations (walks) is determined by an input parameter. For each walk:
+\begin{itemize}
+  \item A \texttt{Vector2Int} for storing the previous position is set to the start position (provided by an input parameter).
+  \item Perform a fixed number of steps, where each step is taken in a randomly chosen direction (up, down, left, or right). The new position after each step is added to the set, and the previous position is updated.  
+\end{itemize}
+
+\subsection{Results}
+After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk. This collection of positions is used to place the floor tiles. The resulting dungeons will tend to have a more organic winding layout, in contrast to those resulting from the binary space partitioning (BSP) approach with its more methodical grid-like arrangement.
 
 \bibliography{references}
 \end{document}
