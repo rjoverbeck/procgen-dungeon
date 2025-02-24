@@ -4,19 +4,29 @@ using Random = UnityEngine.Random;
 
 public class RandomWalkGenerator
 {
-    public static HashSet<Vector2Int> Generate(Vector2Int startPosition, int numberOfSteps, int numberOfWalks)
+    public static Queue<Vector2Int> Generate(Vector2Int startPosition, int numberOfSteps, int numberOfWalks)
     {
-        HashSet<Vector2Int> path = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+        Queue<Vector2Int> path = new Queue<Vector2Int>();
 
         for (int i = 0; i < numberOfWalks; i++)
         {
-            path.Add(startPosition);
             Vector2Int prevPosition = startPosition;
+
+            if (visited.Add(prevPosition))
+            {
+                path.Enqueue(prevPosition);
+            }
 
             for (int j = 0; j < numberOfSteps; j++)
             {
-                Vector2Int nextPosition = prevPosition + getRandomDirection();
-                path.Add(nextPosition);
+                Vector2Int nextPosition = prevPosition + GetRandomDirection();
+
+                if (visited.Add(nextPosition))
+                {
+                    path.Enqueue(nextPosition);
+                }
+
                 prevPosition = nextPosition;
             }
         }
@@ -24,7 +34,7 @@ public class RandomWalkGenerator
         return path;
     }
 
-    private static Vector2Int getRandomDirection()
+    private static Vector2Int GetRandomDirection()
     {
         List<Vector2Int> directions = new List<Vector2Int>
         {

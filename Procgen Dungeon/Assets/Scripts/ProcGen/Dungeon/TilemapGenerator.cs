@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class TilemapGenerator : MonoBehaviour
 {
@@ -34,16 +37,54 @@ public class TilemapGenerator : MonoBehaviour
     [SerializeField]
     private int numberOfWalks = 20;
 
+    [Header("UI Elements")]
+    [SerializeField]
+    private TMP_Text tileCountText;
+
+    private Queue<Vector2Int> _floorPositions;
+    private int _totalTiles;
+    private int _placedTiles;
+
     private void Start()
     {
+        _floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+        _totalTiles = _floorPositions.Count;
+        _placedTiles = 0;
+
+        UpdateTileCountUI();
+
+        StartCoroutine(DrawFloorTilesOverTime());
+
         //GenerateBinarySpacePartitionedRooms();
-        GenerateRandomWalkRoom();
+        //GenerateRandomWalkRoom();
+    }
+
+    private void UpdateTileCountUI()
+    {
+        tileCountText.text = $"Tiles Placed: {_placedTiles} / {_totalTiles}";
+    }
+
+    private IEnumerator DrawFloorTilesOverTime()
+    {
+        while (_floorPositions.Count > 0)
+        {
+            Vector2Int floorPosition = _floorPositions.Dequeue();
+            Vector3Int tilePosition = new Vector3Int(floorPosition.x, floorPosition.y, 0);
+
+            floorTilemap.SetTile(tilePosition, floorTile);
+
+            _placedTiles++;
+
+            UpdateTileCountUI();
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     private void GenerateRandomWalkRoom()
     {
-        HashSet<Vector2Int> floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
-        DrawFloorTiles(floorPositions);
+        //HashSet<Vector2Int> floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+        //DrawFloorTiles(floorPositions);
     }
 
     private void GenerateBinarySpacePartitionedRooms()
