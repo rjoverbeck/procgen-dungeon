@@ -94,5 +94,30 @@ The number of iterations (walks) is determined by an input parameter. For each w
 \subsection{Results}
 After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk. This collection of positions is used to place the floor tiles. The resulting dungeons will tend to have a more organic winding layout, in contrast to those resulting from the binary space partitioning (BSP) approach with its more methodical grid-like arrangement.
 
+\section{Difficulties}
+
+\subsection{Challenges in Moving to Tile Generation Over Time}
+When the project first aimed to generate a dungeon floor, the tile placement occurred synchronously on \texttt{Start()}. This approach was straightforward to implement but lacked any concept of observable progression over time. Addressing this necessitated several changes. 
+
+First, the original data structure for storing the positions of the floor tiles, a \texttt{HashSet} needed to be changed so that order could be preserved. Using a \texttt{Queue} was necessary to maintain first-in-first-out order. However, this change introduced a new challenge: since a \texttt{Queue} alone does not handle duplicates, a separate \texttt{HashSet} had to be used in parallel to record visited positions. By checking against this \texttt{HashSet} before enqueueing a new coordinate, the system could retain an ordered structure while still preventing repeated tiles from being added. Note that while Unity's \texttt{Tilemap.SetTile} method can handle duplicates it would obfuscate how the room is constructed over time so it became necessary to deal with them here. 
+
+Second, switching from a synchronous approach to an incremental, time-based approach introduced the need for coroutines. Previously, the entire tile set could be drawn in a single loop, effectively blocking until all positions were placed. In contrast, placing one tile every half-second requires the code to yield partway through execution so that the game loop can continue running. Implementing the coroutine \texttt{DrawFloorTilesOverTime} allowed each tile placement to be spaced out over time without freezing the entire game.
+
+Third, as tiles were placed over time, it became important to communicate the dungeon generation’s progress to the player. A simple UI element was introduced to display both the total number of tiles to be placed and the number of tiles already placed, updating in real time as new positions were set.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/difficulty-1-before.png}
+  \caption{Challenge 4.1 - game view before}
+  \label{fig:difficulty-1-before}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/difficulty-1-after.png}
+  \caption{Challenge 4.1 - game view after}
+  \label{fig:difficulty-1-after}
+\end{figure}
+
 \bibliography{references}
 \end{document}
