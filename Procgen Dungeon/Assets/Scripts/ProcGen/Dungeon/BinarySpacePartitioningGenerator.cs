@@ -4,16 +4,16 @@ using Random = UnityEngine.Random;
 
 public class BinarySpacePartitioningGenerator
 {
-    public static List<BoundsInt> Generate(BoundsInt areaToPartition, int minWidth, int minHeight)
+    public static Queue<Vector2Int> Generate(BoundsInt areaToPartition, int minWidth, int minHeight, int partitionOffset)
     {
-        Queue<BoundsInt> partitionQueue = new Queue<BoundsInt>();
-        List<BoundsInt> partitions = new List<BoundsInt>();
+        Queue<BoundsInt> partitionableArea = new Queue<BoundsInt>();
+        Queue<BoundsInt> partitions = new Queue<BoundsInt>();
 
-        partitionQueue.Enqueue(areaToPartition);
+        partitionableArea.Enqueue(areaToPartition);
 
-        while (partitionQueue.Count > 0)
+        while (partitionableArea.Count > 0)
         {
-            BoundsInt partition = partitionQueue.Dequeue();
+            BoundsInt partition = partitionableArea.Dequeue();
 
             if (partition.size.x >= minWidth && partition.size.y >= minHeight)
             {
@@ -23,40 +23,40 @@ public class BinarySpacePartitioningGenerator
                 {
                     if (partition.size.y >= minHeight * 2)
                     {
-                        PartitionHorizontally(partition, partitionQueue, minHeight);
+                        PartitionHorizontally(partition, partitionableArea, minHeight);
                     }
                     else if (partition.size.x >= minWidth * 2)
                     {
-                        PartitionVertically(partition, partitionQueue, minWidth);
+                        PartitionVertically(partition, partitionableArea, minWidth);
                     }
                     else
                     {
-                        partitions.Add(partition);
+                        partitions.Enqueue(partition);
                     }
                 }
                 else
                 {
                     if (partition.size.x >= minWidth * 2)
                     {
-                        PartitionVertically(partition, partitionQueue, minWidth);
+                        PartitionVertically(partition, partitionableArea, minWidth);
                     }
                     else if (partition.size.y >= minHeight * 2)
                     {
-                        PartitionHorizontally(partition, partitionQueue, minHeight);
+                        PartitionHorizontally(partition, partitionableArea, minHeight);
                     }
                     else
                     {
-                        partitions.Add(partition);
+                        partitions.Enqueue(partition);
                     }
                 }
             }
             else
             {
-                partitions.Add(partition);
+                partitions.Enqueue(partition);
             }
         }
 
-        return partitions;
+        return GetPositionsFromPartitions(partitions, partitionOffset);
     }
 
     private static void PartitionHorizontally(BoundsInt partition, Queue<BoundsInt> partitionQueue, int minHeight)
@@ -93,5 +93,24 @@ public class BinarySpacePartitioningGenerator
 
         partitionQueue.Enqueue(left);
         partitionQueue.Enqueue(right);
+    }
+
+    private static Queue<Vector2Int> GetPositionsFromPartitions(Queue<BoundsInt> partitions, int partitionOffset)
+    {
+        Queue<Vector2Int> positions = new Queue<Vector2Int>();
+
+        foreach (var partition in partitions)
+        {
+            for (int x = partitionOffset; x < partition.size.x - partitionOffset; x++)
+            {
+                for (int y = partitionOffset; y < partition.size.y - partitionOffset; y++)
+                {
+                    Vector2Int position = (Vector2Int)partition.min + new Vector2Int(x, y);
+                    positions.Enqueue(position);
+                }
+            }
+        }
+
+        return positions;
     }
 }
