@@ -1,15 +1,28 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Nosenko()]{nosenko}
+A.~Nosenko.
+\newblock Asynchronous courotines with c\#.
+\newblock
+  \url{https://learn.microsoft.com/en-us/shows/dotnetconf-2020/asynchronous-courotines-with-c}.
+\newblock Accessed: 28 February 2025.
+
 \bibitem[Short and Adams(2017)]{ShortAdams2017}
 T.~Short and T.~Adams.
 \newblock \emph{Procedural Generation in Game Design}.
 \newblock CRC Press, 2017.
 \newblock Kindle Edition.
+
+\bibitem[Silberschatz et~al.(2007)Silberschatz, Galvin, and
+  Gagne]{silberschatz}
+A.~Silberschatz, P.~B. Galvin, and G.~Gagne.
+\newblock \emph{Operating System Concepts with Java}.
+\newblock Wiley, 7th edition, 2007.
 
 \bibitem[{Unity Technologies}()]{unity_docs}
 {Unity Technologies}.

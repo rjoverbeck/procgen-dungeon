@@ -121,7 +121,12 @@ Third, as tiles were placed over time, it became important to communicate the du
 \end{figure}
 
 \section{Impact of Previous Courses on Project}
-% Include not just Comp Sci courses, but other courses too e.g. gen eds.
+\subsection{CSCI 451 and Utilizing Unity Coroutines}
+Threads in C\# represent an operating-system-level construct. As stated by Silberschatz \emph{et al.}, ``A thread is a basic unit of CPU utilization; it comprises a thread ID, a program counter, a register set, and a stack'' \cite{silberschatz}. This means that each thread is scheduled independently by the operating system and can take advantage of multiple processor cores for true parallelism. However, the creation and management of multiple threads can be resource-intensive, and programmers must carefully manage data shared between threads to avoid race conditions. 
+
+Unity coroutines, on the other hand, are not scheduled by the operating system. They are functions ``that can be suspended, resumed, and executed cooperatively (often on the same thread)'' \cite{nosenko}. In Unity, coroutines primarily run on the main thread and yield control voluntarily, allowing the engine to manage when to resume them. This cooperative model avoids the complexity of thread synchronization, but it does not offer true parallelism by default. Coroutines are particularly useful for tasks that must be broken into incremental steps across frames, such as animations or in the case of this project, long-running operations where you do not want to block the main thread.
+
+My understanding of these concurrency mechanisms was greatly enhanced by taking \textit{CSCI 451 Operating Systems}. The course covered core concepts of processes, threads, synchronization, and CPU scheduling, providing the theoretical background to appreciate how the operating system manages threads and why threads are relatively expensive compared to language-level, cooperative concurrency mechanisms like coroutines. By exploring concurrency at the OS level first, it enables deeper insight into how coroutines abstract these complexities and thus offer a simpler model for many game development scenarios.
 
 \bibliography{references}
 \end{document}
