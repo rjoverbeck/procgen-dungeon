@@ -627,6 +627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorTilemap: {fileID: 1984674126}
   floorTile: {fileID: 11400000, guid: 7919e88c34f9a4b4b9814f501411ba69, type: 2}
+  tileGenerationSpeed: 0.005
   minRoomWidth: 8
   minRoomHeight: 8
   dungeonWidth: 60

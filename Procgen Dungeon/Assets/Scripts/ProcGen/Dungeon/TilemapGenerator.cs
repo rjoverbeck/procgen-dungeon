@@ -13,6 +13,8 @@ public class TilemapGenerator : MonoBehaviour
     private Tilemap floorTilemap;
     [SerializeField]
     private TileBase floorTile;
+    [SerializeField]
+    private float tileGenerationSpeed = 0.1f;
 
     [Header("Binary Space Partitioning")]
     [SerializeField]
@@ -51,8 +53,8 @@ public class TilemapGenerator : MonoBehaviour
             position: bspStartPosition,
             size: new Vector3Int(dungeonWidth, dungeonHeight, 0)
         );
-        _floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
 
+        _floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
         //_floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
 
         _totalTiles = _floorPositions.Count;
@@ -81,7 +83,7 @@ public class TilemapGenerator : MonoBehaviour
 
             UpdateTileCountUI();
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(tileGenerationSpeed);
         }
     }
 }
