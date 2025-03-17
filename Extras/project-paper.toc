@@ -4,14 +4,15 @@
 \contentsline {subsection}{\numberline {2.1}Setting up the Initial Partition}{2}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Iterative Subdivision}{2}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Managing Subdivisions}{2}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Applying Offset}{2}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.4}Applying Offset}{3}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Random Walk Approach}{3}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Initial Conditions}{3}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Iterations (Walks)}{3}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Results}{3}{subsection.3.3}%
 \contentsline {section}{\numberline {4}Wave Function Collapse Approach}{3}{section.4}%
-\contentsline {section}{\numberline {5}Difficulties}{3}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Challenges in Moving to Tile Generation Over Time}{3}{subsection.5.1}%
-\contentsline {section}{\numberline {6}Impact of Previous Courses on Project}{4}{section.6}%
-\contentsline {subsection}{\numberline {6.1}CSCI 451 and Utilizing Unity Coroutines}{4}{subsection.6.1}%
-\contentsline {section}{\numberline {7}Conclusion}{5}{section.7}%
+\contentsline {section}{\numberline {5}Difficulties}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Challenges in Moving to Tile Generation Over Time}{4}{subsection.5.1}%
+\contentsline {section}{\numberline {6}Impact of Previous Courses on Project}{5}{section.6}%
+\contentsline {subsection}{\numberline {6.1}CSCI 451 and Utilizing Unity Coroutines}{5}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}WRIT 102 and Academic Sourcing/Technical Writing}{5}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Conclusion}{6}{section.7}%

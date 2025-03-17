@@ -16,6 +16,7 @@ marginparwidth=1.5cm, marginparsep=0.4cm, margin=2.5cm]{geometry}
 \usepackage{amsmath}  % Math fonts
 \usepackage{amsfonts} %
 \usepackage{amssymb}  %
+\usepackage[section]{placeins} % Add float barrier at start of each new section
 
 %% Citation package
 \usepackage[authoryear]{natbib}
@@ -34,7 +35,6 @@ marginparwidth=1.5cm, marginparsep=0.4cm, margin=2.5cm]{geometry}
 
 
 \section{Introduction}
-
 Add introduction here
 % One or two paragraphs here
 
@@ -96,10 +96,9 @@ The number of iterations (walks) is determined by an input parameter. For each w
 After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk. This collection of positions is used to place the floor tiles. The resulting dungeons will tend to have a more organic winding layout, in contrast to those resulting from the binary space partitioning (BSP) approach with its more methodical grid-like arrangement.
 
 \section{Wave Function Collapse Approach}
-% TODO
+The Wave Function Collapse (WFC) - Simple-Tiled algorithm is a procedural generation method that draws inspiration from quantum mechanics to create tile-based patterns. It works by assigning a set of potential states to each tile and then progressively reducing these possibilities based on constraints from adjacent tiles, much like the collapse of a quantum state into a definite outcome.
 
 \section{Difficulties}
-
 \subsection{Challenges in Moving to Tile Generation Over Time}
 When the project first aimed to generate a dungeon floor, the tile placement occurred synchronously on \texttt{Start()}. This approach was straightforward to implement but lacked any concept of observable progression over time. Addressing this necessitated several changes. 
 
@@ -131,7 +130,12 @@ Unity coroutines, on the other hand, are not scheduled by the operating system. 
 
 My understanding of these concurrency mechanisms was greatly enhanced by taking \textit{CSCI 451 Operating Systems}. The course covered core concepts of processes, threads, synchronization, and CPU scheduling, providing the theoretical background to appreciate how the operating system manages threads and why threads are relatively expensive compared to language-level, cooperative concurrency mechanisms like coroutines. By exploring concurrency at the OS level first, it enables deeper insight into how coroutines abstract these complexities and thus offer a simpler model for many game development scenarios.
 
-% Add subsection referencing gen eds. transfered in and how it helped with this project
+\subsection{WRIT 102 and Academic Sourcing/Technical Writing}
+In addition to technical courses, the project benefited significantly from the skills acquired from University Studies, such as \textit{WRIT 102 Introduction to Academic Writing}. This course, which emphasized careful analysis, systematic research, and the construction of coherent academic arguments laid a solid groundwork for both identifying credible resources and organizing the paper effectively.
+
+The techniques learned in \textit{WRIT 102} proved instrumental during the research phase by facilitating the systematic identification and evaluation of academic sources that supported the project. Moreover, the course’s focus on proper documentation and citation ensured that all referenced materials were integrated seamlessly and accurately, thereby maintaining the academic integrity of the paper.
+
+Lastly, the critical reading and persuasive writing strategies honed in the course helped in articulating complex technical concepts clearly and persuasively, bridging the gap between technical content and academic presentation.
 
 \section{Conclusion}
 
