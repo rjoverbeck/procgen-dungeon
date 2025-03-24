@@ -1,9 +1,21 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Gumin()]{mxgmn}
+M.~Gumin.
+\newblock Wave function collapse.
+\newblock \url{https://github.com/mxgmn/WaveFunctionCollapse/tree/master}.
+\newblock Accessed: 24 March 2025.
+
+\bibitem[Karth and Smith(2017)]{karth}
+I.~Karth and A.~M. Smith.
+\newblock Wavefunctioncollapse is constraint solving in the wild.
+\newblock \emph{FDG '17: Proceedings of the 12th International Conference on
+  the Foundations of Digital Games}, 2017.
 
 \bibitem[Nosenko()]{nosenko}
 A.~Nosenko.
@@ -16,7 +28,6 @@ A.~Nosenko.
 T.~Short and T.~Adams.
 \newblock \emph{Procedural Generation in Game Design}.
 \newblock CRC Press, 2017.
-\newblock Kindle Edition.
 
 \bibitem[Silberschatz et~al.(2007)Silberschatz, Galvin, and
   Gagne]{silberschatz}

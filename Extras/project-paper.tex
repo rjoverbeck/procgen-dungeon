@@ -96,13 +96,21 @@ The number of iterations (walks) is determined by an input parameter. For each w
 After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk. This collection of positions is used to place the floor tiles. The resulting dungeons will tend to have a more organic winding layout, in contrast to those resulting from the binary space partitioning (BSP) approach with its more methodical grid-like arrangement.
 
 \section{Wave Function Collapse Approach}
-The Wave Function Collapse (WFC) algorithm is a procedural generation method that draws inspiration from quantum mechanics to create tile-based patterns. It works by assigning a set of potential states to each tile and then progressively reducing these possibilities based on constraints from adjacent tiles, much like the collapse of a quantum state into a definite outcome. 
+The Wave Function Collapse (WFC) algorithm, specifically the Simple Tiled variant is a procedural generation method that draws inspiration from quantum mechanics to create tile-based patterns. It works by assigning a set of potential states to each tile and then progressively reducing these possibilities based on constraints from adjacent tiles, much like the collapse of a quantum state into a definite outcome. 
 
 A simplified version of this algorithm forms the third approach for generating the layout of our dungeon. Its implementation in our Unity project is explored below.
 
 \subsection{TODO}
 
 \section{Difficulties}
+\subsection{Challenges in Adapting WFC to Unity}
+The Wave Function Collapse (WFC) algorithm offers an innovative approach to procedural content generation. However, adapting it to a Unity 2D project presented several challenges, primarily due to shortcomings in the primary reference, the source for it on GitHub. \cite{mxgmn}
+
+A major source of difficulty was the repository’s README, which conflates two distinct variants of the algorithm: \emph{Simple Tiled} and \emph{Overlapping}. The failure to clearly differentiate between these variants led to confusion in the description of the algorithm which was crucial for reasoning about the source code due to poor naming conventions, lack of inline documentation, and terminology borrowed from Quantum Mechanics despite a tenuous connection.
+
+This was not a unique difficulty, as one researcher noted, ``in personal correspondence with several users of WFC, we learned that many of them treated the code as a black box''. \citep{karth}
+
+
 \subsection{Challenges in Moving to Tile Generation Over Time}
 When the project first aimed to generate a dungeon floor, the tile placement occurred synchronously on \texttt{Start()}. This approach was straightforward to implement but lacked any concept of observable progression over time. Addressing this necessitated several changes. 
 
