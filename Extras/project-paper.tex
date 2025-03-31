@@ -100,7 +100,15 @@ The Wave Function Collapse (WFC) algorithm, specifically the Simple Tiled varian
 
 A simplified version of this algorithm forms the third approach for generating the layout of our dungeon. Its implementation in our Unity project is explored below.
 
-\subsection{TODO}
+\subsection{Setting up - Adjacency Constraints}
+The first step in setting up the algorithm is to establish valid tile adjacencies for the supplied tileset. To ensure the tiles tile appropriately, every pixel on the edge of neighboring tiles must be the same color (see figure \ref{fig:wfc-tile-adjacency-constraints}). To that end, the method \texttt{GetTilesEdgesColors} accepts a list of tiles which are of the type \texttt{Texture2D} (representing bitmaps), it then extracts and returns the color information for every pixel on each tile's edge.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/wfc-tile-adjacency-constraints.png}
+  \caption{Tile Adjacency Constraints}
+  \label{fig:wfc-tile-adjacency-constraints}
+\end{figure}
 
 \section{Difficulties}
 \subsection{Challenges in Adapting WFC to Unity}
