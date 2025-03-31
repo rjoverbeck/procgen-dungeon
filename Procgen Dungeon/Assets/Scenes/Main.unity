@@ -637,6 +637,10 @@ MonoBehaviour:
   rwStartPosition: {x: 0, y: 0}
   numberOfSteps: 40
   numberOfWalks: 20
+  tiles:
+  - {fileID: 2800000, guid: 65f81a77eead350479db613f73d6bb36, type: 3}
+  - {fileID: 2800000, guid: 237afb56b2087e840a3d5d791c9b7fa4, type: 3}
+  - {fileID: 2800000, guid: 48e2de664f03544488873776cb507e3f, type: 3}
   tileCountText: {fileID: 712853263}
 --- !u!4 &929956056
 Transform:

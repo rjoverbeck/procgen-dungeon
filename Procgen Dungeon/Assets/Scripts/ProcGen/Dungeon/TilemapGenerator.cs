@@ -39,6 +39,10 @@ public class TilemapGenerator : MonoBehaviour
     [SerializeField]
     private int numberOfWalks = 20;
 
+    [Header("Wave Function Collapse")]
+    [SerializeField]
+    private List<Texture2D> tiles;
+
     [Header("UI Elements")]
     [SerializeField]
     private TMP_Text tileCountText;
@@ -54,8 +58,9 @@ public class TilemapGenerator : MonoBehaviour
             size: new Vector3Int(dungeonWidth, dungeonHeight, 0)
         );
 
-        _floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
+        //_floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
         //_floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+        _floorPositions = WaveFunctionCollapseGenerator.Generate(tiles);
 
         _totalTiles = _floorPositions.Count;
         _placedTiles = 0;
