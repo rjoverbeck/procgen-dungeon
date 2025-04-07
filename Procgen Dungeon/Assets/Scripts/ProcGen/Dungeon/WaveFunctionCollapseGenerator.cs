@@ -9,7 +9,7 @@ public class WaveFunctionCollapseGenerator
 
         int[][][] tilesEdgesViableTiles = GetTilesEdgesViableTiles(tilesEdgesColors);
 
-        // temporary logging
+        // TODO: remove temporary logging
         for (int i = 0; i < tilesEdgesViableTiles.Length; i++)
         {
             string logMsgTile0 = $"Tile {i}:" +
@@ -28,7 +28,7 @@ public class WaveFunctionCollapseGenerator
 
         Dictionary<Vector2Int, int[]> outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tiles.Count);
 
-        // temporary logging
+        // TODO: remove temporary logging
         foreach(var item in outputGrid)
         {
             string logMsg = $"Cell {item.Key} - viable tiles: {string.Join(", ", item.Value)}";
@@ -38,7 +38,6 @@ public class WaveFunctionCollapseGenerator
         return null;
     }
 
-    // Get the color of every tile's edge pixels
     private static Color[][][] GetTilesEdgesColors(List<Texture2D> tiles)
     {
         Color[][][] tilesEdgesColors = new Color[tiles.Count][][];
@@ -76,8 +75,6 @@ public class WaveFunctionCollapseGenerator
         return tilesEdgesColors;
     }
 
-    // Get the index of every viable tile (tiles whose complementary edges e.g. right-left have the same colors for each pixel)
-    // for each tile's edge
     private static int[][][] GetTilesEdgesViableTiles(Color[][][] tilesEdgesColors)
     {
         int tileCount = tilesEdgesColors.Length;
@@ -106,7 +103,6 @@ public class WaveFunctionCollapseGenerator
         return tilesEdgesViableTiles;
     }
 
-    // Return the complementary edge index
     private static int GetComplementaryEdge(int edge)
     {
         // 0=bottom, 1=top, 2=left, 3=right
@@ -120,7 +116,6 @@ public class WaveFunctionCollapseGenerator
         }
     }
 
-    // Return true if edge colors match (pixel for pixel)
     private static bool EdgesMatch(Color[] edge1, Color[] edge2)
     {
         if (edge1.Length != edge2.Length)
@@ -139,7 +134,6 @@ public class WaveFunctionCollapseGenerator
         return true;
     }
 
-    // Construct a grid of given width and height where each cell contains the index for every tile (as all are viable to start)
     private static Dictionary<Vector2Int, int[]> InitializeOutputGrid(int outputWidth, int outputHeight, int tileCount)
     {
         Dictionary<Vector2Int, int[]> outputGrid = new Dictionary<Vector2Int, int[]>();
