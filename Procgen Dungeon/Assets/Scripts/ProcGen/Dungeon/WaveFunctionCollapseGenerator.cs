@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WaveFunctionCollapseGenerator
 {
-    public static Queue<Vector2Int> Generate(List<Texture2D> tiles)
+    public static Queue<Vector2Int> Generate(List<Texture2D> tiles, List<int> tileWeights, int outputWidth, int outputHeight)
     {
         Color[][][] tilesEdgesColors = GetTilesEdgesColors(tiles);
 
@@ -24,6 +24,15 @@ public class WaveFunctionCollapseGenerator
             Debug.Log(logMsgTile1);
             Debug.Log(logMsgTile2);
             Debug.Log(logMsgTile3);
+        }
+
+        Dictionary<Vector2Int, int[]> outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tiles.Count);
+
+        // temporary logging
+        foreach(var item in outputGrid)
+        {
+            string logMsg = $"Cell {item.Key} - viable tiles: {string.Join(", ", item.Value)}";
+            Debug.Log(logMsg);
         }
 
         return null;
@@ -128,5 +137,28 @@ public class WaveFunctionCollapseGenerator
         }
 
         return true;
+    }
+
+    // Construct a grid of given width and height where each cell contains the index for every tile (as all are viable to start)
+    private static Dictionary<Vector2Int, int[]> InitializeOutputGrid(int outputWidth, int outputHeight, int tileCount)
+    {
+        Dictionary<Vector2Int, int[]> outputGrid = new Dictionary<Vector2Int, int[]>();
+
+        for (int x = 0; x < outputWidth; x++)
+        {
+            for (int y = 0; y < outputHeight; y++)
+            {
+                int[] allTileIndices = new int[tileCount];
+
+                for (int i = 0; i < tileCount; i++)
+                {
+                    allTileIndices[i] = i;
+                }
+
+                outputGrid.Add(new Vector2Int(x, y), allTileIndices);
+            }
+        }
+
+        return outputGrid;
     }
 }

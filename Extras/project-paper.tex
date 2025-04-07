@@ -112,6 +112,16 @@ The first step in setting up the algorithm is to establish valid tile adjacencie
   \label{fig:wfc-tile-adjacency-constraints}
 \end{figure}
 
+\subsection{Setting up - Finding Viable Tiles for each Tile's Edge}
+The next step is to determine which tiles satisfy the adjacency constraints of every tile. The method \texttt{GetTilesEdgesViableTiles} performs this task by iterating through each tile and examining every one of its four edges. For each edge, the method identifies its complementary edge (i.e., the bottom edge is compared with the top edge, and the left edge with the right edge) using a helper function \texttt{GetComplementaryEdge}.
+
+The method then compares the colors of the current edge with the corresponding complementary edge of every tile by using a pixel-by-pixel comparison via the \texttt{EdgesMatch} helper function. If the two edges match exactly, the index of the candidate tile is recorded as a viable neighbor. This process results in a three-dimensional array where each element contains the list of tile indices that can be placed adjacent to a given tile on a specific edge.
+
+This step is crucial as it ensures that only tiles with matching edge colors are considered for adjacent placement, thus maintaining the seamless appearance of the tiled pattern.
+
+\subsection{Setting up - Initializing the Output Grid}
+TODO
+
 \section{Difficulties}
 \subsection{Challenges in Adapting WFC to Unity}
 The Wave Function Collapse (WFC) algorithm offers an innovative approach to procedural content generation. However, adapting it to a Unity 2D project presented several challenges, primarily due to shortcomings in the primary reference, the source for it on GitHub. \cite{mxgmn}
