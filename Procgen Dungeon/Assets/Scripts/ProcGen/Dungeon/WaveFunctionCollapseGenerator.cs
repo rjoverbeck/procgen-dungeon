@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WaveFunctionCollapseGenerator
@@ -9,30 +10,16 @@ public class WaveFunctionCollapseGenerator
 
         int[][][] tilesEdgesViableTiles = GetTilesEdgesViableTiles(tilesEdgesColors);
 
-        // TODO: remove temporary logging
-        for (int i = 0; i < tilesEdgesViableTiles.Length; i++)
-        {
-            string logMsgTile0 = $"Tile {i}:" +
-                                 $"\nBottom: {string.Join(", ", tilesEdgesViableTiles[i][0])}";
-            string logMsgTile1 = $"Tile {i}:" +
-                                 $"\nTop: {string.Join(", ", tilesEdgesViableTiles[i][1])}";
-            string logMsgTile2 = $"Tile {i}:" +
-                                 $"\nLeft: {string.Join(", ", tilesEdgesViableTiles[i][2])}";
-            string logMsgTile3 = $"Tile {i}:" +
-                                 $"\nRight: {string.Join(", ", tilesEdgesViableTiles[i][3])}";
-            Debug.Log(logMsgTile0);
-            Debug.Log(logMsgTile1);
-            Debug.Log(logMsgTile2);
-            Debug.Log(logMsgTile3);
-        }
+        Dictionary<int, int> tilesToWeights = GetTilesToWeights(tiles.Count, tileWeights);
 
-        Dictionary<Vector2Int, int[]> outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tiles.Count);
+        Dictionary<Vector2Int, Cell> outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tilesToWeights);
 
-        // TODO: remove temporary logging
-        foreach(var item in outputGrid)
+        CollapseCells(outputGrid, tilesEdgesViableTiles);
+
+        // TODO: Remove temporary logging
+        foreach (var cell in outputGrid)
         {
-            string logMsg = $"Cell {item.Key} - viable tiles: {string.Join(", ", item.Value)}";
-            Debug.Log(logMsg);
+            Debug.Log($"Cell: {cell.Key}" + $" - Tile: {cell.Value.GetViableTilesToWeights().Keys.First()}");
         }
 
         return null;
@@ -134,25 +121,154 @@ public class WaveFunctionCollapseGenerator
         return true;
     }
 
-    private static Dictionary<Vector2Int, int[]> InitializeOutputGrid(int outputWidth, int outputHeight, int tileCount)
+    private static Dictionary<int, int> GetTilesToWeights(int tileCount, List<int> tileWeights)
     {
-        Dictionary<Vector2Int, int[]> outputGrid = new Dictionary<Vector2Int, int[]>();
+        Dictionary<int, int> tilesToWeights = new Dictionary<int, int>();
+
+        for (int i = 0; i < tileCount; i++)
+        {
+            tilesToWeights.Add(i, tileWeights[i]);
+        }
+
+        return tilesToWeights;
+    }
+
+    private class Cell
+    {
+        private Dictionary<int, int> viableTilesToWeights;
+        private float entropy;
+
+        public Cell(Dictionary<int, int> viableTilesToWeights)
+        {
+            this.viableTilesToWeights = viableTilesToWeights;
+            entropy = ComputeEntropy();
+        }
+
+        private int ComputeTotalWeight()
+        {
+            int totalWeight = 0;
+
+            foreach (int weight in viableTilesToWeights.Values)
+            {
+                totalWeight += weight;
+            }
+
+            return totalWeight;
+        }
+
+        private float ComputeEntropy()
+        {
+            float totalWeight = ComputeTotalWeight();
+            float entropy = 0f;
+            foreach (int weight in viableTilesToWeights.Values)
+            {
+                float probability = weight / totalWeight;
+                entropy -= probability * Mathf.Log(probability);
+            }
+
+            return entropy;
+        }
+
+        public void Collapse()
+        {
+            List<int> tilesByWeight = new List<int>();
+            foreach (var entry in viableTilesToWeights)
+            {
+                for (int i = 0; i < entry.Value; i++)
+                {
+                    tilesByWeight.Add(entry.Key);
+                }
+            }
+
+            int selectedTile = tilesByWeight[Random.Range(0, tilesByWeight.Count)];
+
+            viableTilesToWeights.Clear();
+            viableTilesToWeights.Add(selectedTile, 1);
+            entropy = 0f;
+        }
+
+        public Dictionary<int, int> GetViableTilesToWeights() { return viableTilesToWeights; }
+
+        public float GetEntropy()
+        {
+            ComputeEntropy();
+            return entropy;
+        }
+    }
+
+    private static Dictionary<Vector2Int, Cell> InitializeOutputGrid(int outputWidth, int outputHeight, Dictionary<int, int> tilesToWeights)
+    {
+        Dictionary<Vector2Int, Cell> outputGrid = new Dictionary<Vector2Int, Cell>();
 
         for (int x = 0; x < outputWidth; x++)
         {
             for (int y = 0; y < outputHeight; y++)
             {
-                int[] allTileIndices = new int[tileCount];
+                Dictionary<int, int> copy = tilesToWeights.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                for (int i = 0; i < tileCount; i++)
-                {
-                    allTileIndices[i] = i;
-                }
-
-                outputGrid.Add(new Vector2Int(x, y), allTileIndices);
+                outputGrid.Add(new Vector2Int(x, y), new Cell(copy));
             }
         }
 
         return outputGrid;
+    }
+
+    private static void CollapseCells(Dictionary<Vector2Int, Cell> outputGrid, int[][][] tilesEdgesViableTiles)
+    {
+        Dictionary<Vector2Int, int> neighborToEdgeMap = new Dictionary<Vector2Int, int>
+        {
+            { new Vector2Int(0, 1), 0 }, // neighbor below - bottom edge
+            { new Vector2Int(0, -1), 1 }, // neighbor above - top edge
+            { new Vector2Int(-1, 0), 2 }, // neighbor to the left - left edge
+            { new Vector2Int(1, 0), 3 } // neighbor to the right - right edge
+        };
+
+        for (int i = 0; i < outputGrid.Count; i++)
+        {
+            Vector2Int minEntropyCellPosition = new Vector2Int(-1, -1);
+            float minEntropy = float.MaxValue;
+
+            foreach (var cell in outputGrid)
+            {
+                float currEntropy = cell.Value.GetEntropy();
+
+                if (currEntropy < minEntropy)
+                {
+                    minEntropy = currEntropy;
+                    minEntropyCellPosition = cell.Key;
+                }
+            }
+
+            outputGrid[minEntropyCellPosition].Collapse();
+            int collapsedTile = outputGrid[minEntropyCellPosition].GetViableTilesToWeights().Keys.First();
+
+            foreach (var neighborToEdge in neighborToEdgeMap)
+            {
+                Vector2Int neighborPos = minEntropyCellPosition + neighborToEdge.Key;
+
+                if (!outputGrid.ContainsKey(neighborPos))
+                    continue;
+
+                Cell neighborCell = outputGrid[neighborPos];
+
+                if (neighborCell.GetViableTilesToWeights().Count <= 1)
+                    continue;
+
+                int edge = neighborToEdge.Value;
+                HashSet<int> allowedTiles = new HashSet<int>(tilesEdgesViableTiles[collapsedTile][edge]);
+
+                List<int> keysToRemove = new List<int>();
+                foreach (var viableTile in neighborCell.GetViableTilesToWeights().Keys)
+                {
+                    if (!allowedTiles.Contains(viableTile))
+                        keysToRemove.Add(viableTile);
+                }
+
+                foreach (int key in keysToRemove)
+                {
+                    neighborCell.GetViableTilesToWeights().Remove(key);
+                }
+            }
+        }
     }
 }

@@ -101,7 +101,8 @@ The Wave Function Collapse (WFC) algorithm, specifically the Simple Tiled varian
 
 A simplified version of this algorithm forms the third approach for generating the layout of our dungeon. Its implementation in our Unity project is explored below.
 
-\subsection{Setting up - Adjacency Constraints}
+\subsection{Setting up}
+\subsubsection{Adjacency Constraints}
 The first step in setting up the algorithm is to establish valid tile adjacencies for the supplied tileset. To ensure the tiles tile appropriately, every pixel on the edge of neighboring tiles must be the same color (see figure \ref{fig:wfc-tile-adjacency-constraints}). To that end, the method \texttt{GetTilesEdgesColors} accepts a list of tiles which are of the type \texttt{Texture2D} (representing bitmaps), it then extracts and returns the color information for every pixel on each tile's edge.
 
 \begin{figure}[htbp]
@@ -111,15 +112,25 @@ The first step in setting up the algorithm is to establish valid tile adjacencie
   \label{fig:wfc-tile-adjacency-constraints}
 \end{figure}
 
-\subsection{Setting up - Finding Viable Tiles for each Tile's Edge}
+\subsubsection{Finding Viable Tiles for each Tile's Edge}
 The next step is to determine which tiles satisfy the adjacency constraints of every tile. The method \texttt{GetTilesEdgesViableTiles} performs this task by iterating through each tile and examining every one of its four edges. For each edge, the method identifies its complementary edge (i.e., the bottom edge is compared with the top edge, and the left edge with the right edge) using a helper function \texttt{GetComplementaryEdge}.
 
 The method then compares the colors of the current edge with the corresponding complementary edge of every tile by using a pixel-by-pixel comparison via the \texttt{EdgesMatch} helper function. If the two edges match exactly, the index of the candidate tile is recorded as a viable neighbor. This process results in a three-dimensional array where each element contains the list of tile indices that can be placed adjacent to a given tile on a specific edge.
 
 This step is crucial as it ensures that only tiles with matching edge colors are considered for adjacent placement, thus maintaining the seamless appearance of the tiled pattern.
 
-\subsection{Setting up - Initializing the Output Grid}
+\subsubsection{Mapping Tiles to Weights}
+The function \texttt{GetTilesToWeights} is responsible for constructing a dictionary that maps each tile’s identifier (an integer index) to its corresponding weight. These weights, provided in the \texttt{tileWeights} list, can be interpreted as the desirability of selecting a given tile during the cell collapse process. By iterating over the total number of tiles, the function assembles a lookup table that will be used by each cell to initialize its set of viable tiles.
+
+\subsubsection{Cell Structure and Entropy Calculation}
+The \texttt{Cell} class encapsulates the state of each grid cell. Each cell maintains a dictionary (\texttt{viableTilesToWeights}) that reflects the current set of possible tiles along with their weights. Crucially, the cell also stores a computed value called \texttt{entropy}. In this context, entropy is a measure of uncertainty or randomness over the set of viable options, computed using an approach similar to the Shannon entropy formula.
+
+\subsubsection{Grid Initialization}
+The function \texttt{InitializeOutputGrid} is tasked with constructing the overall grid that represents the output of the procedural process. The grid is implemented as a dictionary where each key is a two-dimensional coordinate (represented by a \texttt{Vector2Int}) and the value is an instance of the \texttt{Cell} class.
+
+\subsection{The Algorithm}
 TODO
+
 
 \section{Difficulties}
 \subsection{Challenges in Adapting WFC to Unity}
