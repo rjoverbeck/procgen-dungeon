@@ -22,6 +22,8 @@ public class WaveFunctionCollapseGenerator
             Debug.Log($"Cell: {cell.Key}" + $" - Tile: {cell.Value.GetViableTilesToWeights().Keys.First()}");
         }
 
+        // TODO: Extract
+
         return null;
     }
 
@@ -137,11 +139,13 @@ public class WaveFunctionCollapseGenerator
     {
         private Dictionary<int, int> viableTilesToWeights;
         private float entropy;
+        public bool isCollapsed;
 
         public Cell(Dictionary<int, int> viableTilesToWeights)
         {
             this.viableTilesToWeights = viableTilesToWeights;
             entropy = ComputeEntropy();
+            isCollapsed = false;
         }
 
         private int ComputeTotalWeight()
@@ -185,6 +189,7 @@ public class WaveFunctionCollapseGenerator
             viableTilesToWeights.Clear();
             viableTilesToWeights.Add(selectedTile, 1);
             entropy = 0f;
+            isCollapsed = true;
         }
 
         public Dictionary<int, int> GetViableTilesToWeights() { return viableTilesToWeights; }
@@ -213,9 +218,31 @@ public class WaveFunctionCollapseGenerator
         return outputGrid;
     }
 
+    private static Vector2Int findMinEntropyCellPosition(Dictionary<Vector2Int, Cell> outputGrid)
+    {
+        Vector2Int minEntropyCellPosition = new Vector2Int(-1, -1);
+
+        float minimumEntropy = float.MaxValue;
+        foreach (var cell in outputGrid)
+        {
+            if (cell.Value.isCollapsed)
+                continue;
+
+            float entropy = cell.Value.GetEntropy();
+
+            if (entropy < minimumEntropy)
+            {
+                minimumEntropy = entropy;
+                minEntropyCellPosition = cell.Key;
+            }
+        }
+
+        return minEntropyCellPosition;
+    }
+
     private static void CollapseCells(Dictionary<Vector2Int, Cell> outputGrid, int[][][] tilesEdgesViableTiles)
     {
-        Dictionary<Vector2Int, int> neighborToEdgeMap = new Dictionary<Vector2Int, int>
+        Dictionary<Vector2Int, int> neighborOffsetToEdge = new Dictionary<Vector2Int, int>
         {
             { new Vector2Int(0, 1), 0 }, // neighbor below - bottom edge
             { new Vector2Int(0, -1), 1 }, // neighbor above - top edge
@@ -223,33 +250,26 @@ public class WaveFunctionCollapseGenerator
             { new Vector2Int(1, 0), 3 } // neighbor to the right - right edge
         };
 
-        for (int i = 0; i < outputGrid.Count; i++)
+        int cellsCollapsed = 0;
+        int totalCells = outputGrid.Count;
+
+        while (cellsCollapsed < totalCells)
         {
-            Vector2Int minEntropyCellPosition = new Vector2Int(-1, -1);
-            float minEntropy = float.MaxValue;
-
-            foreach (var cell in outputGrid)
-            {
-                float currEntropy = cell.Value.GetEntropy();
-
-                if (currEntropy < minEntropy)
-                {
-                    minEntropy = currEntropy;
-                    minEntropyCellPosition = cell.Key;
-                }
-            }
-
+            Vector2Int minEntropyCellPosition = findMinEntropyCellPosition(outputGrid);
             outputGrid[minEntropyCellPosition].Collapse();
+            cellsCollapsed++;
+
             int collapsedTile = outputGrid[minEntropyCellPosition].GetViableTilesToWeights().Keys.First();
 
-            foreach (var neighborToEdge in neighborToEdgeMap)
+            // propagation
+            foreach (var neighborToEdge in neighborOffsetToEdge)
             {
-                Vector2Int neighborPos = minEntropyCellPosition + neighborToEdge.Key;
+                Vector2Int neighborPosition = minEntropyCellPosition + neighborToEdge.Key;
 
-                if (!outputGrid.ContainsKey(neighborPos))
+                if (!outputGrid.ContainsKey(neighborPosition))
                     continue;
 
-                Cell neighborCell = outputGrid[neighborPos];
+                Cell neighborCell = outputGrid[neighborPosition];
 
                 if (neighborCell.GetViableTilesToWeights().Count <= 1)
                     continue;
