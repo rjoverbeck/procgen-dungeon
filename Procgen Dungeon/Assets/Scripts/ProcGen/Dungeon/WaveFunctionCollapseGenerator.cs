@@ -13,8 +13,12 @@ public class WaveFunctionCollapseGenerator
         Dictionary<int, int> tilesToWeights = GetTilesToWeights(tiles.Count, tileWeights);
 
         Dictionary<Vector2Int, Cell> outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tilesToWeights);
-
-        CollapseCells(outputGrid, tilesEdgesViableTiles);
+        bool containsContradiction = CollapseCells(outputGrid, tilesEdgesViableTiles);
+        while (containsContradiction)
+        {
+            outputGrid = InitializeOutputGrid(outputWidth, outputHeight, tilesToWeights);
+            containsContradiction = CollapseCells(outputGrid, tilesEdgesViableTiles);
+        }
 
         // TODO: Remove temporary logging
         foreach (var cell in outputGrid)
@@ -221,8 +225,8 @@ public class WaveFunctionCollapseGenerator
     private static Vector2Int findMinEntropyCellPosition(Dictionary<Vector2Int, Cell> outputGrid)
     {
         Vector2Int minEntropyCellPosition = new Vector2Int(-1, -1);
-
         float minimumEntropy = float.MaxValue;
+
         foreach (var cell in outputGrid)
         {
             if (cell.Value.isCollapsed)
@@ -240,7 +244,7 @@ public class WaveFunctionCollapseGenerator
         return minEntropyCellPosition;
     }
 
-    private static void CollapseCells(Dictionary<Vector2Int, Cell> outputGrid, int[][][] tilesEdgesViableTiles)
+    private static bool CollapseCells(Dictionary<Vector2Int, Cell> outputGrid, int[][][] tilesEdgesViableTiles)
     {
         Dictionary<Vector2Int, int> neighborOffsetToEdge = new Dictionary<Vector2Int, int>
         {
@@ -259,36 +263,67 @@ public class WaveFunctionCollapseGenerator
             outputGrid[minEntropyCellPosition].Collapse();
             cellsCollapsed++;
 
-            int collapsedTile = outputGrid[minEntropyCellPosition].GetViableTilesToWeights().Keys.First();
+            Queue<Vector2Int> cellsToPropagate = new Queue<Vector2Int>();
+            cellsToPropagate.Enqueue(minEntropyCellPosition);
 
-            // propagation
-            foreach (var neighborToEdge in neighborOffsetToEdge)
+            while (cellsToPropagate.Count > 0)
             {
-                Vector2Int neighborPosition = minEntropyCellPosition + neighborToEdge.Key;
+                Vector2Int currentCellPosition = cellsToPropagate.Dequeue();
+                Cell currentCell = outputGrid[currentCellPosition];
 
-                if (!outputGrid.ContainsKey(neighborPosition))
-                    continue;
-
-                Cell neighborCell = outputGrid[neighborPosition];
-
-                if (neighborCell.GetViableTilesToWeights().Count <= 1)
-                    continue;
-
-                int edge = neighborToEdge.Value;
-                HashSet<int> allowedTiles = new HashSet<int>(tilesEdgesViableTiles[collapsedTile][edge]);
-
-                List<int> keysToRemove = new List<int>();
-                foreach (var viableTile in neighborCell.GetViableTilesToWeights().Keys)
+                foreach (var kv in neighborOffsetToEdge)
                 {
-                    if (!allowedTiles.Contains(viableTile))
-                        keysToRemove.Add(viableTile);
-                }
+                    Vector2Int neighborOffset = kv.Key;
+                    int edge = kv.Value;
 
-                foreach (int key in keysToRemove)
-                {
-                    neighborCell.GetViableTilesToWeights().Remove(key);
+                    Vector2Int neighborPosition = currentCellPosition + neighborOffset;
+
+                    if (!outputGrid.ContainsKey(neighborPosition))
+                        continue;
+
+                    Cell neighborCell = outputGrid[neighborPosition];
+
+                    if (neighborCell.isCollapsed)
+                        continue;
+
+                    HashSet<int> allowedTiles = new HashSet<int>();
+                    foreach (int tile in currentCell.GetViableTilesToWeights().Keys)
+                    {
+                        foreach (int n in tilesEdgesViableTiles[tile][edge])
+                        {
+                            allowedTiles.Add(n);
+                        }
+                    }
+
+                    int beforeCount = neighborCell.GetViableTilesToWeights().Count;
+
+                    List<int> toRemove = new List<int>();
+                    foreach (int tile in neighborCell.GetViableTilesToWeights().Keys)
+                    {
+                        if (!allowedTiles.Contains(tile))
+                        {
+                            toRemove.Add(tile);
+                        }
+                    }
+
+                    foreach (int tile in toRemove)
+                    {
+                        neighborCell.GetViableTilesToWeights().Remove(tile);
+                    }
+
+                    int afterCount = neighborCell.GetViableTilesToWeights().Count;
+
+                    if (afterCount == 0)
+                        return true; // contains contradiction
+
+                    if (afterCount < beforeCount)
+                    {
+                        cellsToPropagate.Enqueue(neighborPosition);
+                    }
                 }
             }
         }
+
+        return false; // does not contain contradiction
     }
 }
