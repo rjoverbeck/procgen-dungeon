@@ -642,7 +642,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 237afb56b2087e840a3d5d791c9b7fa4, type: 3}
   - {fileID: 2800000, guid: 48e2de664f03544488873776cb507e3f, type: 3}
   - {fileID: 2800000, guid: 2e8f1c3128c9ce54ea652cec3eaaae1b, type: 3}
-  tileWeights: 01000000020000000300000002000000
+  tileWeights: 02000000020000000300000001000000
   outputWidth: 3
   outputHeight: 3
   tileCountText: {fileID: 712853263}

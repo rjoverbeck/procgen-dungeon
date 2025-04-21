@@ -241,8 +241,8 @@ public class WaveFunctionCollapseGenerator
     {
         Dictionary<Vector2Int, int> neighborOffsetToEdge = new Dictionary<Vector2Int, int>
         {
-            { new Vector2Int(0, 1), 0 }, // neighbor below - bottom edge
-            { new Vector2Int(0, -1), 1 }, // neighbor above - top edge
+            { new Vector2Int(0, -1), 0 }, // neighbor below - bottom edge
+            { new Vector2Int(0, 1), 1 }, // neighbor above - top edge
             { new Vector2Int(-1, 0), 2 }, // neighbor to the left - left edge
             { new Vector2Int(1, 0), 3 } // neighbor to the right - right edge
         };

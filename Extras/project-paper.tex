@@ -129,7 +129,24 @@ The \texttt{Cell} class encapsulates the state of each grid cell. Each cell main
 The function \texttt{InitializeOutputGrid} is tasked with constructing the overall grid that represents the output of the procedural process. The grid is implemented as a dictionary where each key is a two-dimensional coordinate (represented by a \texttt{Vector2Int}) and the value is an instance of the \texttt{Cell} class.
 
 \subsection{The Algorithm}
-TODO
+The algorithm is driven by the \texttt{CollapseCells} method which for every cell in the grid:
+\begin{enumerate}
+  \item Collapses the minimum‐entropy cell.
+  \item Enqueues that cell for neighbor‐constraint propagation.
+  \item Dequeues cells one by one, and for each of the four cardinal neighbors:
+    \begin{itemize}
+      \item Skips neighbors outside the grid or already collapsed.
+      \item Builds the set of \emph{allowed} neighbor tiles by looking up, for each currently viable tile in the source cell, which adjacent tiles are compatible on the shared edge (using \texttt{tilesEdgesViableTiles[tile][edge]}).
+      \item Prunes any tiles from the neighbor’s \texttt{viableTilesToWeights} that are not in this allowed set.
+      \item If the neighbor’s viable set becomes empty, returns \texttt{true} to signal a contradiction.
+      \item Otherwise, if pruning reduced its size, enqueues the neighbor for further propagation.
+    \end{itemize}
+\end{enumerate}
+
+By iteratively collapsing low‐entropy cells and propagating adjacency constraints, this method enforces global consistency across the grid or detects unsatisfiable configurations. If a contradiction is found, the grid is re-initialized and the process repeats.
+
+\subsection{Extracting Tilemap Positions}
+The function \texttt{GetPositionsFromGrid} takes the fully collapsed \texttt{outputGrid} and the list of source tile textures, and produces a \texttt{Queue<Vector2Int>} like the other position generators. It does so by iterating over every pixel within each cell's tile (\texttt{Texture2D}): if the sampled \texttt{Color} has red, green, and blue channels all equal to zero (i.e.\ pure black), the method computes the absolute tilemap position by scaling the cell’s grid coordinate by the tile dimensions and adding the pixel offset.
 
 
 \section{Difficulties}
