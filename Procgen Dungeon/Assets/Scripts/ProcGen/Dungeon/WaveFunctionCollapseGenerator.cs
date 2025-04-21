@@ -20,15 +20,7 @@ public class WaveFunctionCollapseGenerator
             containsContradiction = CollapseCells(outputGrid, tilesEdgesViableTiles);
         }
 
-        // TODO: Remove temporary logging
-        foreach (var cell in outputGrid)
-        {
-            Debug.Log($"Cell: {cell.Key}" + $" - Tile: {cell.Value.GetViableTilesToWeights().Keys.First()}");
-        }
-
-        // TODO: Extract
-
-        return null;
+        return GetPositionsFromGrid(outputGrid, tiles);
     }
 
     private static Color[][][] GetTilesEdgesColors(List<Texture2D> tiles)
@@ -215,7 +207,8 @@ public class WaveFunctionCollapseGenerator
             {
                 Dictionary<int, int> copy = tilesToWeights.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                outputGrid.Add(new Vector2Int(x, y), new Cell(copy));
+                int flippedY = (outputHeight - 1) - y;
+                outputGrid.Add(new Vector2Int(x, flippedY), new Cell(copy));
             }
         }
 
@@ -325,5 +318,43 @@ public class WaveFunctionCollapseGenerator
         }
 
         return false; // does not contain contradiction
+    }
+
+    private static Queue<Vector2Int> GetPositionsFromGrid(Dictionary<Vector2Int, Cell> outputGrid,
+        List<Texture2D> tiles)
+    {
+        Queue<Vector2Int> positions = new Queue<Vector2Int>();
+
+        foreach (var kv in outputGrid)
+        {
+            Vector2Int positionInGrid = kv.Key;
+            int tileIndex = kv.Value.GetViableTilesToWeights().Keys.First();
+
+            Debug.Log($"Cell: {positionInGrid}" + $" - Tile: {tileIndex}");
+
+            Texture2D tile = tiles[tileIndex];
+            int width = tile.width;
+            int height = tile.height;
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    Color c = tile.GetPixel(x, y);
+
+                    if (c.r == 0f && c.g == 0f && c.b == 0f)
+                    {
+                        var positionInTilemap = new Vector2Int(
+                            positionInGrid.x * width + x,
+                            positionInGrid.y * height + y
+                        );
+
+                        positions.Enqueue(positionInTilemap);
+                    }
+                }
+            }
+        }
+
+        return positions;
     }
 }
