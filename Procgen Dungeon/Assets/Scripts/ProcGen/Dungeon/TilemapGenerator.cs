@@ -56,16 +56,65 @@ public class TilemapGenerator : MonoBehaviour
     private Queue<Vector2Int> _floorPositions;
     private int _totalTiles;
     private int _placedTiles;
+    private Coroutine _coroutine;
 
     private void Start()
     {
+        _totalTiles = 0;
+        _placedTiles = 0;
+
+        UpdateTileCountUI();
+    }
+
+    public void CreateBSPTilemap()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
+
         BoundsInt dungeonArea = new BoundsInt(
             position: bspStartPosition,
             size: new Vector3Int(dungeonWidth, dungeonHeight, 0)
         );
 
-        //_floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
-        //_floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+        _floorPositions = BinarySpacePartitioningGenerator.Generate(dungeonArea, minRoomWidth, minRoomHeight, roomOffset);
+
+        _totalTiles = _floorPositions.Count;
+        _placedTiles = 0;
+
+        UpdateTileCountUI();
+
+        _coroutine = StartCoroutine(DrawFloorTilesOverTime());
+    }
+
+    public void CreateRWTilemap()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
+
+        _floorPositions = RandomWalkGenerator.Generate(rwStartPosition, numberOfSteps, numberOfWalks);
+
+        _totalTiles = _floorPositions.Count;
+        _placedTiles = 0;
+
+        UpdateTileCountUI();
+
+        _coroutine = StartCoroutine(DrawFloorTilesOverTime());
+    }
+
+    public void CreateWFCTilemap()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
+
         _floorPositions = WaveFunctionCollapseGenerator.Generate(tiles, tileWeights, outputWidth, outputHeight);
 
         _totalTiles = _floorPositions.Count;
@@ -73,7 +122,7 @@ public class TilemapGenerator : MonoBehaviour
 
         UpdateTileCountUI();
 
-        StartCoroutine(DrawFloorTilesOverTime());
+        _coroutine = StartCoroutine(DrawFloorTilesOverTime());
     }
 
     private void UpdateTileCountUI()
@@ -83,6 +132,8 @@ public class TilemapGenerator : MonoBehaviour
 
     private IEnumerator DrawFloorTilesOverTime()
     {
+        floorTilemap.ClearAllTiles();
+
         while (_floorPositions.Count > 0)
         {
             Vector2Int floorPosition = _floorPositions.Dequeue();

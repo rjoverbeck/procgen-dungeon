@@ -181,6 +181,9 @@ Third, as tiles were placed over time, it became important to communicate the du
   \label{fig:difficulty-1-after}
 \end{figure}
 
+\subsection{Challenges in implementing WFC}
+TODO: Describe debugging process: Issue with selecting minimum entropy cell, always collapsing first cell due to no isCollapsed flag. Issue with not flipping Y on OutputGrid to match Unity's coordinate system. Issue with only propagating adjacency constraints from collapsed cell to 4-cardinal neighbors instead of having it ripple out to every cell with changed possibilities.
+
 \section{Impact of Previous Courses on Project}
 \subsection{CSCI 451 and Utilizing Unity Coroutines}
 Threads in C\# represent an operating-system-level construct. As stated by Silberschatz \emph{et al.}, ``A thread is a basic unit of CPU utilization; it comprises a thread ID, a program counter, a register set, and a stack'' \cite{silberschatz}. This means that each thread is scheduled independently by the operating system and can take advantage of multiple processor cores for true parallelism. However, the creation and management of multiple threads can be resource-intensive, and programmers must carefully manage data shared between threads to avoid race conditions. 
