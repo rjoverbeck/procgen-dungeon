@@ -73,7 +73,24 @@ The actual subdivision is performed in two helper methods, \texttt{PartitionHori
 By alternating or randomly selecting horizontal versus vertical splits, the algorithm produces layouts of different shapes, preventing overly predictable results.
 
 \subsection{Applying Offset}
-TODO
+Once the BSP iterations have yielded a queue of bounding boxes, the method \\ \texttt{GetPositionsFromPartitions} converts these spatial chunks into concrete tile coordinates while honouring a configurable margin. Its behaviour can be summarised in four concise steps:
+\begin{enumerate}
+  \item A \texttt{Queue<Vector2Int>} is created to hold every interior grid coordinate that will ultimately be used by the tilemap.
+  \item For every bounding box in the collection, the method scans the rectangle column-wise. Two nested loops sweep the integer ranges 
+\[
+\begin{aligned}
+  x &\in [\,\text{\texttt{partitionOffset}},\;
+           \text{\texttt{partition.size.x}}
+           - \text{\texttt{partitionOffset}}) \\[4pt]
+  y &\in [\,\text{\texttt{partitionOffset}},\;
+           \text{\texttt{partition.size.y}}
+           - \text{\texttt{partitionOffset}})
+\end{aligned}
+\]
+thereby discarding a border of thickness \texttt{partitionOffset} on all four sides. This margin separates the bounding boxes into rooms.
+  \item Each local offset \texttt{(x,y)} is converted to an absolute grid coordinate by adding it to \texttt{partition.min}. Because \texttt{partition.min} stores the rectangle's lower-left corner, the expression \texttt{(Vector2Int)partition.min + new Vector2Int(x,y);} yields the true position that the tile will eventually occupy in the global tilemap.
+  \item The method finally returns the populated \texttt{positions} queue, providing a collection of draw-eligible positions from the bounding boxes constructed by BSP.
+\end{enumerate}
 
 \section{Random Walk Approach}
 \begin{quote}
