@@ -37,9 +37,17 @@ marginparwidth=1.5cm, marginparsep=0.4cm, margin=2.5cm]{geometry}
 
 
 \section{Introduction}
-TODO - include link to repo here
+Procedural generation has become a vital tool in modern game development, allowing developers to create expansive, varied, and engaging experiences efficiently. This paper explores three distinct procedural generation algorithms implemented within Unity's 2D framework: Binary Space Partitioning (BSP), Random Walk, and Wave Function Collapse (WFC). Each algorithm provides a unique approach and set of advantages, particularly when applied to generating dungeon layouts for games.
+
+The Binary Space Partitioning method subdivides a given space iteratively to generate structured, room-based dungeons. Conversely, the Random Walk method leverages random processes to produce more organic, winding paths. The Wave Function Collapse algorithm, inspired by concepts from quantum mechanics, systematically applies adjacency constraints to generate coherent tile-based layouts. By examining these algorithms, this paper not only documents their implementation specifics and practical considerations but also evaluates the challenges faced when integrating these techniques into Unity's environment. The project's complete source code is publicly available at \url{https://github.com/rjoverbeck/procgen-dungeon}.
+
+\section{Project Setup}
+To integrate our three dungeon-generation approaches with Unity's rendering pipeline, we implement a single \texttt{TilemapGenerator} \texttt{MonoBehaviour} that drives tile placement from any of the position generators. Each generator---Binary Space Partitioning, Random Walk, and Wave Function Collapse---exposes a \texttt{Generate(...)} method returning a \texttt{Queue<Vector2Int>} of floor-tile coordinates. The \texttt{TilemapGenerator} then consumes this queue to draw tiles onto a Unity \texttt{Tilemap} over time, updating a simple UI counter as it goes.
+
+To enable interactive exploration and real-time comparison of the three procedural methods, we attach a \texttt{PlayerMovement} component to the player character. This component implements \texttt{Controls.IGameplayActions} from Unity's Input System: the \texttt{OnMove} callback reads a \texttt{Vector2} from the \texttt{Move} action each frame and applies it to the player's \texttt{Rigidbody2D} (scaled by \texttt{moveSpeed}) for smooth movement. Additionally, three input callbacks---\texttt{OnCreateBSPTilemap}, \texttt{OnCreateRWTilemap}, and \texttt{OnCreateWFCTilemap}---are bound to dedicated keys or buttons. When the player presses the corresponding control, the script invokes \texttt{tilemapGenerator.CreateBSPTilemap()}, \texttt{CreateRWTilemap()} or \texttt{CreateWFCTilemap()}, respectively. This design lets the player freely traverse the current dungeon layout and, at any moment, regenerate the floor using the BSP, Random Walk, or WFC algorithm, facilitating immediate, in-game comparisons of each procedural style.
 
 \section{Binary Space Partitioning Approach}
+\subsection{Introduction}
 \begin{quote}
   \emph{"A binary space partition takes a given space and splits it in half, and then takes the two areas that were created and splits those in half, and repeats until some threshold is reached."}
   \cite[p.~293]{ShortAdams2017}
@@ -92,7 +100,11 @@ thereby discarding a border of thickness \texttt{partitionOffset} on all four si
   \item The method finally returns the populated \texttt{positions} queue, providing a collection of draw-eligible positions from the bounding boxes constructed by BSP.
 \end{enumerate}
 
+\subsection{Conclusion}
+By combining a straightforward queue-based BSP algorithm with configurable size thresholds and offsets, we achieve a flexible yet predictable room-layout generator. The approach naturally produces a range of room shapes and sizes and easily adapts to different dungeon dimensions. Moreover, isolating the subdivision logic into small helper methods keeps the code base clean and maintainable. Overall, Binary Space Partitioning proved to be a reliable foundation for our 2D dungeon generation, and provided a foundation for exploring other procedural content generation techniques.
+
 \section{Random Walk Approach}
+\subsection{Introduction}
 \begin{quote}
   \emph{"Random walks are produced by starting at a given point and then taking steps in random directions. Many natural processes, like molecular  motion, can be described by random walks, and they can be useful for  generating all sorts of naturalistic paths and features."}
   \cite[p.~286]{ShortAdams2017}
@@ -111,9 +123,13 @@ The number of iterations (walks) is determined by an input parameter. For each w
 \end{itemize}
 
 \subsection{Results}
-After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk. This collection of positions is used to place the floor tiles. The resulting dungeons will tend to have a more organic winding layout, in contrast to those resulting from the binary space partitioning (BSP) approach with its more methodical grid-like arrangement.
+After all walks and steps are completed, the algorithm returns the set of all unique positions visited during the random walk.
+
+\subsection{Conclusion}
+The Random Walk approach offers a highly organic alternative to grid-based BSP rooms. By adjusting \texttt{walkCount} and \texttt{stepCount}, one can fine-tune corridor density, branching complexity, and overall coverage. Its simplicity and reliance on basic data structures make it easy to integrate and experiment with in Unity, providing rapidly generated, exploratory dungeons that contrast sharply with the more predictable, room-oriented layouts of the BSP method.
 
 \section{Wave Function Collapse Approach}
+\subsection{Introduction}
 The Wave Function Collapse (WFC) algorithm, specifically the Simple Tiled variant is a procedural generation method that draws inspiration from quantum mechanics to create tile-based patterns. It works by assigning a set of potential states to each tile and then progressively reducing these possibilities based on constraints from adjacent tiles, much like the collapse of a quantum state into a definite outcome. 
 
 A simplified version of this algorithm forms the third approach for generating the layout of our dungeon. Its implementation in our Unity project is explored below.
@@ -137,7 +153,7 @@ The method then compares the colors of the current edge with the corresponding c
 This step is crucial as it ensures that only tiles with matching edge colors are considered for adjacent placement, thus maintaining the seamless appearance of the tiled pattern.
 
 \subsubsection{Mapping Tiles to Weights}
-The function \texttt{GetTilesToWeights} is responsible for constructing a dictionary that maps each tile’s identifier (an integer index) to its corresponding weight. These weights, provided in the \texttt{tileWeights} list, can be interpreted as the desirability of selecting a given tile during the cell collapse process. By iterating over the total number of tiles, the function assembles a lookup table that will be used by each cell to initialize its set of viable tiles.
+The function \texttt{GetTilesToWeights} is responsible for constructing a dictionary that maps each tile's identifier (an integer index) to its corresponding weight. These weights, provided in the \texttt{tileWeights} list, can be interpreted as the desirability of selecting a given tile during the cell collapse process. By iterating over the total number of tiles, the function assembles a lookup table that will be used by each cell to initialize its set of viable tiles.
 
 \subsubsection{Cell Structure and Entropy Calculation}
 The \texttt{Cell} class encapsulates the state of each grid cell. Each cell maintains a dictionary (\texttt{viableTilesToWeights}) that reflects the current set of possible tiles along with their weights. Crucially, the cell also stores a computed value called \texttt{entropy}. In this context, entropy is a measure of uncertainty or randomness over the set of viable options, computed using an approach similar to the Shannon entropy formula.
@@ -148,41 +164,48 @@ The function \texttt{InitializeOutputGrid} is tasked with constructing the overa
 \subsection{The Algorithm}
 The algorithm is driven by the \texttt{CollapseCells} method which for every cell in the grid:
 \begin{enumerate}
-  \item Collapses the minimum‐entropy cell.
-  \item Enqueues that cell for neighbor‐constraint propagation.
+  \item Collapses the minimum-entropy cell.
+  \item Enqueues that cell for neighbor-constraint propagation.
   \item Dequeues cells one by one, and for each of the four cardinal neighbors:
     \begin{itemize}
       \item Skips neighbors outside the grid or already collapsed.
       \item Builds the set of \emph{allowed} neighbor tiles by looking up, for each currently viable tile in the source cell, which adjacent tiles are compatible on the shared edge (using \texttt{tilesEdgesViableTiles[tile][edge]}).
-      \item Prunes any tiles from the neighbor’s \texttt{viableTilesToWeights} that are not in this allowed set.
-      \item If the neighbor’s viable set becomes empty, returns \texttt{true} to signal a contradiction.
+      \item Prunes any tiles from the neighbor's \texttt{viableTilesToWeights} that are not in this allowed set.
+      \item If the neighbor's viable set becomes empty, returns \texttt{true} to signal a contradiction.
       \item Otherwise, if pruning reduced its size, enqueues the neighbor for further propagation.
     \end{itemize}
 \end{enumerate}
 
-By iteratively collapsing low‐entropy cells and propagating adjacency constraints, this method enforces global consistency across the grid or detects unsatisfiable configurations. If a contradiction is found, the grid is re-initialized and the process repeats.
+By iteratively collapsing low-entropy cells and propagating adjacency constraints, this method enforces global consistency across the grid or detects unsatisfiable configurations. If a contradiction is found, the grid is re-initialized and the process repeats.
 
 \subsection{Extracting Tilemap Positions}
-The function \texttt{GetPositionsFromGrid} takes the fully collapsed \texttt{outputGrid} and the list of source tile textures, and produces a \texttt{Queue<Vector2Int>} like the other position generators. It does so by iterating over every pixel within each cell's tile (\texttt{Texture2D}): if the sampled \texttt{Color} has red, green, and blue channels all equal to zero (i.e.\ pure black), the method computes the absolute tilemap position by scaling the cell’s grid coordinate by the tile dimensions and adding the pixel offset.
+The function \texttt{GetPositionsFromGrid} takes the fully collapsed \texttt{outputGrid} and the list of source tile textures, and produces a \texttt{Queue<Vector2Int>} like the other position generators. It does so by iterating over every pixel within each cell's tile (\texttt{Texture2D}): if the sampled \texttt{Color} has red, green, and blue channels all equal to zero (i.e.\ pure black), the method computes the absolute tilemap position by scaling the cell's grid coordinate by the tile dimensions and adding the pixel offset.
 
+\subsection{Conclusion}
+Wave Function Collapse merges local adjacency rules with global constraint propagation to produce richly varied, coherent patterns that neither purely random methods nor rigid partitioning can achieve alone. Although its setup---defining edge-matching rules, weights, and entropy calculations---requires more upfront work, WFC excels at generating highly detailed, non-repeating dungeon layouts. Integrating this method into Unity demonstrated both the power of constraint-based generation and the importance of efficient propagation logic. As a result, WFC stands as a versatile third pillar in our procedural toolkit, complementing the structured rooms of BSP and the organic paths of Random Walk.
 
 \section{Difficulties}
 \subsection{Challenges in Adapting WFC to Unity}
 The Wave Function Collapse (WFC) algorithm offers an innovative approach to procedural content generation. However, adapting it to a Unity 2D project presented several challenges, primarily due to shortcomings in the primary reference, the source for it on GitHub. \cite{mxgmn}
 
-A major source of difficulty was the repository’s README, which conflates two distinct variants of the algorithm: \emph{Simple Tiled} and \emph{Overlapping}. The failure to clearly differentiate between these variants led to confusion in the description of the algorithm which was crucial for reasoning about the source code due to poor naming conventions, lack of inline documentation, and terminology borrowed from Quantum Mechanics despite a tenuous connection.
+A major source of difficulty was the repository's README, which conflates two distinct variants of the algorithm: \emph{Simple Tiled} and \emph{Overlapping}. The failure to clearly differentiate between these variants led to confusion in the description of the algorithm which was crucial for reasoning about the source code due to poor naming conventions, lack of inline documentation, and terminology borrowed from Quantum Mechanics despite a tenuous connection.
 
 This was not a unique difficulty, as one researcher noted, ``in personal correspondence with several users of WFC, we learned that many of them treated the code as a black box''. \citep{karth}
 
+Beyond documentation-related difficulties, practical implementation introduced additional hurdles. One critical issue was the initial omission of an \texttt{isCollapsed} flag within the \texttt{Cell} structure. Without this flag, the algorithm repeatedly selected the first collapsed cell---which inherently possess the lowest possible entropy (0)---thus preventing the correct progression through the grid.
+
+Additionally, the original implementation incorrectly assumed a top-left origin for grid coordinates, resulting in a mismatch with Unity's coordinate system. This discrepancy caused a flawed mapping from the generated output grid to the intended tilemap.
+
+Lastly, the propagation logic initially only addressed immediate cardinal neighbors of a collapsed cell. In practice, however, correct functionality necessitated iterative propagation through all affected neighbors to ensure adjacency constraints properly influenced the entire grid, thereby enabling information to ripple out and achieve global coherence.
 
 \subsection{Challenges in Moving to Tile Generation Over Time}
 When the project first aimed to generate a dungeon floor, the tile placement occurred synchronously on \texttt{Start()}. This approach was straightforward to implement but lacked any concept of observable progression over time. Addressing this necessitated several changes. 
 
-First, the original data structure for storing the positions of the floor tiles, a \texttt{HashSet} needed to be changed so that order could be preserved. Using a \texttt{Queue} was necessary to maintain first-in-first-out order. However, this change introduced a new challenge: since a \texttt{Queue} alone does not handle duplicates, a separate \texttt{HashSet} had to be used in parallel to record visited positions. By checking against this \texttt{HashSet} before enqueueing a new coordinate, the system could retain an ordered structure while still preventing repeated tiles from being added. Note that while Unity's \texttt{Tilemap.SetTile} method can handle duplicates it would obfuscate how the room is constructed over time so it became necessary to deal with them here. 
+First, the original data structure for storing the positions of the floor tiles, a \texttt{HashSet} needed to be changed so that order could be preserved. Using a \texttt{Queue} was necessary to maintain first-in-first-out order. However, this change introduced a new challenge: since a \texttt{Queue} alone does not handle duplicates, a separate \texttt{HashSet} had to be used in parallel to record visited positions for algorithms that produced duplicates. By checking against this \texttt{HashSet} before enqueueing a new coordinate, the system could retain an ordered structure while still preventing repeated tiles from being added. Note that while Unity's \texttt{Tilemap.SetTile} method can handle duplicates it would obfuscate how the room is constructed over time so it became necessary to deal with them here.
 
-Second, switching from a synchronous approach to an incremental, time-based approach introduced the need for coroutines. Previously, the entire tile set could be drawn in a single loop, effectively blocking until all positions were placed. In contrast, placing one tile every half-second requires the code to yield partway through execution so that the game loop can continue running. Implementing the coroutine \texttt{DrawFloorTilesOverTime} allowed each tile placement to be spaced out over time without freezing the entire game.
+Second, switching from a synchronous approach to an incremental, time-based approach introduced the need for coroutines. Previously, the entire tile set could be drawn in a single loop, effectively blocking until all positions were placed. In contrast, placing one tile every five milliseconds (as is the speed currently) requires the code to yield partway through execution so that the game loop can continue running. Implementing the coroutine \texttt{DrawFloorTilesOverTime} allowed each tile placement to be spaced out over time without freezing the entire game.
 
-Third, as tiles were placed over time, it became important to communicate the dungeon generation’s progress to the player. A simple UI element was introduced to display both the total number of tiles to be placed and the number of tiles already placed, updating in real time as new positions were set.
+Third, as tiles were placed over time, it became important to communicate the dungeon generation's progress to the player. A simple UI element was introduced to display both the total number of tiles to be placed and the number of tiles already placed, updating in real time as new positions were set.
 
 \begin{figure}[htbp]
   \centering
@@ -198,9 +221,6 @@ Third, as tiles were placed over time, it became important to communicate the du
   \label{fig:difficulty-1-after}
 \end{figure}
 
-\subsection{Challenges in implementing WFC}
-TODO: Describe debugging process: Issue with selecting minimum entropy cell, always collapsing first cell due to no isCollapsed flag. Issue with not flipping Y on OutputGrid to match Unity's coordinate system. Issue with only propagating adjacency constraints from collapsed cell to 4-cardinal neighbors instead of having it ripple out to every cell with changed possibilities.
-
 \section{Impact of Previous Courses on Project}
 \subsection{CSCI 451 and Utilizing Unity Coroutines}
 Threads in C\# represent an operating-system-level construct. As stated by Silberschatz \emph{et al.}, ``A thread is a basic unit of CPU utilization; it comprises a thread ID, a program counter, a register set, and a stack'' \cite{silberschatz}. This means that each thread is scheduled independently by the operating system and can take advantage of multiple processor cores for true parallelism. However, the creation and management of multiple threads can be resource-intensive, and programmers must carefully manage data shared between threads to avoid race conditions. 
@@ -210,13 +230,18 @@ Unity coroutines, on the other hand, are not scheduled by the operating system. 
 My understanding of these concurrency mechanisms was greatly enhanced by taking \textit{CSCI 451 Operating Systems}. The course covered core concepts of processes, threads, synchronization, and CPU scheduling, providing the theoretical background to appreciate how the operating system manages threads and why threads are relatively expensive compared to language-level, cooperative concurrency mechanisms like coroutines. By exploring concurrency at the OS level first, it enables deeper insight into how coroutines abstract these complexities and thus offer a simpler model for many game development scenarios.
 
 \subsection{WRIT 102 and Academic Sourcing/Technical Writing}
-In addition to technical courses, the project benefited significantly from the skills acquired from University Studies, such as \textit{WRIT 102 Introduction to Academic Writing}. This course, which emphasized careful analysis, systematic research, and the construction of coherent academic arguments laid a solid groundwork for both identifying credible resources and organizing the paper effectively.
+In addition to technical courses, the project benefited significantly from the skills acquired from University Studies, such as \textit{WRIT 102 Introduction to Academic Writing}. This course, which emphasized careful analysis, systematic research, and the construction of coherent academic arguments laid a solid groundwork for both identifying credible resources and organizing this paper effectively.
 
-The techniques learned in \textit{WRIT 102} proved instrumental during the research phase by facilitating the systematic identification and evaluation of academic sources that supported the project. Moreover, the course’s focus on proper documentation and citation ensured that all referenced materials were integrated seamlessly and accurately, thereby maintaining the academic integrity of the paper.
+The techniques learned in \textit{WRIT 102} proved instrumental during the research phase by facilitating the systematic identification and evaluation of academic sources that supported the project. Moreover, the course's focus on proper documentation and citation ensured that all referenced materials were integrated seamlessly and accurately, thereby maintaining the academic integrity of the paper.
 
 Lastly, the critical reading and persuasive writing strategies honed in the course helped in articulating complex technical concepts clearly and persuasively, bridging the gap between technical content and academic presentation.
 
 \section{Conclusion}
+Procedural content generation significantly streamlines the creation of complex and engaging game environments. Throughout this project, we explored three procedural generation algorithms---Binary Space Partitioning, Random Walk, and Wave Function Collapse---each offering distinct benefits and limitations. BSP provided clear, organized room structures, while Random Walk offered unpredictability and a natural flow, and WFC ensured complex, constraint-driven coherence. Integrating these algorithms into Unity's 2D environment highlighted practical challenges, such as coordinate system mismatches and managing tile placements over time.
+
+Furthermore, the project underscored the importance of rigorous iterative testing, which were essential in overcoming implementation difficulties. Finally, the integration of coroutines for asynchronous tile placement and evaluation of references demonstrated how previous coursework, particularly in operating systems and technical writing, significantly enriched the project's development and documentation processes.
+
+This experience was invaluable as my Capstone project. It allowed me to synthesize and apply knowledge from multiple courses, provided hands-on exposure to algorithmic thinking and software development practices, and significantly deepened my understanding of procedural generation techniques. Ultimately, this project not only enhanced my technical proficiency but also prepared me for future challenges and innovations within the broader field of game development and computer science.
 
 \bibliography{references}
 \end{document}
