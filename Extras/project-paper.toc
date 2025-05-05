@@ -28,7 +28,7 @@
 \contentsline {section}{\numberline {6}Difficulties}{8}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Challenges in Adapting WFC to Unity}{8}{subsection.6.1}%
 \contentsline {subsection}{\numberline {6.2}Challenges in Moving to Tile Generation Over Time}{9}{subsection.6.2}%
-\contentsline {section}{\numberline {7}Impact of Previous Courses on Project}{10}{section.7}%
-\contentsline {subsection}{\numberline {7.1}CSCI 451 and Utilizing Unity Coroutines}{10}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}WRIT 102 and Academic Sourcing/Technical Writing}{10}{subsection.7.2}%
+\contentsline {section}{\numberline {7}Impact of Previous Courses on Project}{11}{section.7}%
+\contentsline {subsection}{\numberline {7.1}CSCI 451 and Utilizing Unity Coroutines}{11}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}WRIT 102 and Academic Sourcing/Technical Writing}{11}{subsection.7.2}%
 \contentsline {section}{\numberline {8}Conclusion}{11}{section.8}%
