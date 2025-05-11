@@ -31,4 +31,5 @@
 \contentsline {section}{\numberline {7}Impact of Previous Courses on Project}{11}{section.7}%
 \contentsline {subsection}{\numberline {7.1}CSCI 451 and Utilizing Unity Coroutines}{11}{subsection.7.1}%
 \contentsline {subsection}{\numberline {7.2}WRIT 102 and Academic Sourcing/Technical Writing}{11}{subsection.7.2}%
-\contentsline {section}{\numberline {8}Conclusion}{11}{section.8}%
+\contentsline {section}{\numberline {8}Areas of Improvement}{11}{section.8}%
+\contentsline {section}{\numberline {9}Conclusion}{12}{section.9}%
