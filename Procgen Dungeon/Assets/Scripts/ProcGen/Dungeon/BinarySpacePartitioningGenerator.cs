@@ -15,45 +15,39 @@ public class BinarySpacePartitioningGenerator
         {
             BoundsInt partition = partitionableArea.Dequeue();
 
-            if (partition.size.x >= minWidth && partition.size.y >= minHeight)
-            {
-                bool preferHorizontal = Random.value < 0.5f;
+            bool preferHorizontal = Random.value < 0.5f;
 
-                if (preferHorizontal)
+            if (preferHorizontal)
+            {
+                if (partition.size.y >= minHeight * 2)
                 {
-                    if (partition.size.y >= minHeight * 2)
-                    {
-                        PartitionHorizontally(partition, partitionableArea, minHeight);
-                    }
-                    else if (partition.size.x >= minWidth * 2)
-                    {
-                        PartitionVertically(partition, partitionableArea, minWidth);
-                    }
-                    else
-                    {
-                        partitions.Enqueue(partition);
-                    }
+                    PartitionHorizontally(partition, partitionableArea, minHeight);
+                }
+                else if (partition.size.x >= minWidth * 2)
+                {
+                    PartitionVertically(partition, partitionableArea, minWidth);
                 }
                 else
                 {
-                    if (partition.size.x >= minWidth * 2)
-                    {
-                        PartitionVertically(partition, partitionableArea, minWidth);
-                    }
-                    else if (partition.size.y >= minHeight * 2)
-                    {
-                        PartitionHorizontally(partition, partitionableArea, minHeight);
-                    }
-                    else
-                    {
-                        partitions.Enqueue(partition);
-                    }
+                    partitions.Enqueue(partition);
                 }
             }
             else
             {
-                partitions.Enqueue(partition);
+                if (partition.size.x >= minWidth * 2)
+                {
+                    PartitionVertically(partition, partitionableArea, minWidth);
+                }
+                else if (partition.size.y >= minHeight * 2)
+                {
+                    PartitionHorizontally(partition, partitionableArea, minHeight);
+                }
+                else
+                {
+                    partitions.Enqueue(partition);
+                }
             }
+
         }
 
         return GetPositionsFromPartitions(partitions, partitionOffset);

@@ -64,8 +64,7 @@ Next, this bounding area is enqueued in a \texttt{Queue<BoundsInt>} which manage
 While there are partitions in the queue:
 \begin{itemize}
   \item Dequeue the next partition.
-  \item Check if the current partition meets or exceeds the \emph{minimum width} (\texttt{minWidth}) and \emph{minimum height} (\texttt{minHeight}) constraints.
-  \item If it can be subdivided, choose randomly whether to \emph{prefer a horizontal} or \emph{vertical} split (a 50/50 chance). Attempt to partition the space along that orientation if there is sufficient size to do so at least twice (e.g., if the height is at least \texttt{2 * minHeight} for a horizontal split).
+  \item Choose randomly whether to \emph{prefer a horizontal} or \emph{vertical} split (a 50/50 chance). Attempt to partition the space along that orientation if there is sufficient size to do so at least twice (e.g., if the height is at least \texttt{2 * minHeight} for a horizontal split).
   \item If the chosen orientation is not feasible, try the alternative orientation.
   \item If neither orientation is possible (the partition is too small), mark that partition as finalized (a ``room'') and add it to the \texttt{partitions} list.
 \end{itemize}
