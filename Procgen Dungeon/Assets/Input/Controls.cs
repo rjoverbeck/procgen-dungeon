@@ -200,7 +200,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d59ca146-fc82-418f-bf35-67a9e4de066b"",
-                    ""path"": ""<Keyboard>/w"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard1"",
